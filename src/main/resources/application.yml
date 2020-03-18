@@ -1,0 +1,3 @@
+application:
+   authtoken: XYZ
+   homeassistanturl: http://localhost8080:/api/test
