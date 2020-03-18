@@ -1,9 +1,14 @@
-FROM fabric8/s2i-java:latest
+FROM fabric8/java-centos-openjdk8-jdk
 
-USER 0
+MAINTAINER Thomas Philipona <philipona@puzzle.ch>
 
-COPY . /tmp/src/
+EXPOSE 8080 9090
 
-RUN /usr/local/s2i/assemble && rm -rf /tmp/src
+RUN mkdir -p /tmp/src/
+COPY src /tmp/src/src
+COPY gradle /tmp/src/gradle
+COPY build.gradle gradlew settings.gradle /tmp/src/
 
-USER 1000
+RUN cd /tmp/src && sh gradlew build
+
+RUN cp -a /tmp/src/build/libs/*.jar /deployments/virtual-beerbutton.jar
