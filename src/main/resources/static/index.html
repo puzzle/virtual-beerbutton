@@ -7,10 +7,15 @@
 <script>
 $(document).ready(function(){
   $(".fbbutton").click(function(){
-     $.post("/api/button/", null,
+     $.post("/api/beerbutton/", null,
          function(data,status){
          });
   });
+  $(".kafibutton").click(function(){
+	     $.post("/api/coffeebutton/", null,
+	         function(data,status){
+	         });
+	  });
 });
 </script>
 <style>
@@ -33,13 +38,9 @@ body .center .select-button {
   cursor: pointer;
   font-size: xx-large;
   border-radius: 50%;
-  background: #1E5A96;
-  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #1E5A96), color-stop(100%, #3B7BBE));
-  background-image: -moz-gradient(linear, left top, left bottom, color-stop(0%, #1E5A96), color-stop(100%, #3B7BBE));
-  box-shadow: 0 15px #3B7BBE;
+  margin-bottom: 30px;
 }
 body .center .select-button:active {
-  box-shadow: 0 0 #3B7BBE;
   -webkit-transform: translate(0px, 15px);
   -moz-transform: translate(0px, 15px);
   -ms-transform: translate(0px, 15px);
@@ -50,10 +51,31 @@ body .center .select-button:active {
   -o-transition: 0.1s all ease-out;
   transition: 0.1s all ease-out;
 }
+
+body .center .fbbutton {
+  background: #1E5A96;
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #1E5A96), color-stop(100%, #3B7BBE));
+  background-image: -moz-gradient(linear, left top, left bottom, color-stop(0%, #1E5A96), color-stop(100%, #3B7BBE));
+  box-shadow: 0 15px #3FA8E0;
+}
+body .center .fbbutton:active {
+  box-shadow: 0 0 #3FA8E0;
+}
+
+body .center .kafibutton {
+  background: #69B978;
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #69B978), color-stop(100%, #61B44B));
+  background-image: -moz-gradient(linear, left top, left bottom, color-stop(0%, #69B978), color-stop(100%, #61B44B));
+  box-shadow: 0 15px #3FA8E0;
+}
+body .center .kafibutton:active {
+  box-shadow: 0 0 #3FA8E0;
+}
 </style>
 </head>
 <body>
 <div class="center">
+  <div class="select-button kafibutton">Kafi</div>
   <div class="select-button fbbutton">Bier</div>
 </div>
 </body>

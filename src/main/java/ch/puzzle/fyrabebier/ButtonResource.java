@@ -26,9 +26,9 @@ public class ButtonResource {
 	private String homeassistanturl;
 	
 	@ResponseStatus(HttpStatus.CREATED)
-	@PostMapping(value="/button")
-	public void hitButton() {
-		log.info("Button was clicked");
+	@PostMapping(value="/beerbutton")
+	public void hitBeerButton() {
+		log.info("Beer Button was clicked");
 		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders headers = new HttpHeaders();
 	    headers.setContentType(MediaType.APPLICATION_JSON);
@@ -36,6 +36,22 @@ public class ButtonResource {
 	    
 	    HttpEntity<String> request = 
 	    	      new HttpEntity<String>("{\"entity_id\": \"script.notify_remote_fyrabebier\"}", headers);
+	    
+	    String result = restTemplate.postForObject(homeassistanturl, request, String.class);
+	    log.info("Result from Home Assistant: " + result);
+	}
+	
+	@ResponseStatus(HttpStatus.CREATED)
+	@PostMapping(value="/coffeebutton")
+	public void hitCoffeeButton() {
+		log.info("Coffee Button was clicked");
+		RestTemplate restTemplate = new RestTemplate();
+		HttpHeaders headers = new HttpHeaders();
+	    headers.setContentType(MediaType.APPLICATION_JSON);
+	    headers.set("Authorization", "Bearer " + token);
+	    
+	    HttpEntity<String> request = 
+	    	      new HttpEntity<String>("{\"entity_id\": \"script.notify_remote_kafipouse\"}", headers);
 	    
 	    String result = restTemplate.postForObject(homeassistanturl, request, String.class);
 	    log.info("Result from Home Assistant: " + result);
