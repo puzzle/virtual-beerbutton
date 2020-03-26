@@ -19,41 +19,53 @@ public class ButtonResource {
 	
 	private static final Logger log = LoggerFactory.getLogger(ButtonResource.class);
 	
-	@Value("${application.authtoken:@null}")
-	private String token;
+	@Value("${application.authtokenbeer:#{null}}")
+	private String tokenbeer;
 	
-	@Value("${application.homeassistanturl}")
-	private String homeassistanturl;
+	@Value("${application.authtokencoffee:#{null}}")
+	private String tokencoffee;
+	
+	@Value("${application.backendurlbeer}")
+	private String backendurlbeer;
+	
+	@Value("${application.backendurlcoffee}")
+	private String backendurlcoffee;
+	
+	@Value("${application.payloadbeer:#{null}}")
+	private String payloadbeer;
+	
+	@Value("${application.payloadcoffee:#{null}}")
+	private String payloadcoffee;
+	
+	
 	
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping(value="/beerbutton")
 	public void hitBeerButton() {
 		log.info("Beer Button was clicked");
-		RestTemplate restTemplate = new RestTemplate();
-		HttpHeaders headers = new HttpHeaders();
-	    headers.setContentType(MediaType.APPLICATION_JSON);
-	    headers.set("Authorization", "Bearer " + token);
-	    
-	    HttpEntity<String> request = 
-	    	      new HttpEntity<String>("{\"entity_id\": \"script.notify_remote_fyrabebier\"}", headers);
-	    
-	    String result = restTemplate.postForObject(homeassistanturl, request, String.class);
-	    log.info("Result from Home Assistant: " + result);
+		sendPayloadToBackend(backendurlbeer, tokenbeer, payloadbeer);
 	}
 	
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping(value="/coffeebutton")
 	public void hitCoffeeButton() {
 		log.info("Coffee Button was clicked");
+		sendPayloadToBackend(backendurlcoffee, tokencoffee, payloadcoffee);
+	}
+	
+	private void sendPayloadToBackend(String url, String token, String payload) {
+		
 		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders headers = new HttpHeaders();
 	    headers.setContentType(MediaType.APPLICATION_JSON);
-	    headers.set("Authorization", "Bearer " + token);
+	    if(token != null && !token.isEmpty()) {
+	    	headers.set("Authorization", "Bearer " + token);
+	    }
 	    
 	    HttpEntity<String> request = 
-	    	      new HttpEntity<String>("{\"entity_id\": \"script.notify_remote_kafipouse\"}", headers);
+	    	      new HttpEntity<String>(payload, headers);
 	    
-	    String result = restTemplate.postForObject(homeassistanturl, request, String.class);
-	    log.info("Result from Home Assistant: " + result);
+	    String result = restTemplate.postForObject(url, request, String.class);
+	    log.info("Result from backend: " + result);
 	}
 }
