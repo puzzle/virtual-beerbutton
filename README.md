@@ -12,7 +12,7 @@ The two buttons basically once clicked send post requests to backend urls.
 
 | Environmentvariable                  | Description           | Example  |
 | ------------------------------------ |---------------------|----------|
-| APPLICATION_BACKENDURLBEER           | Backend url           | https://homeassistantserver/api/services/script/turn_on  |
+| APPLICATION_BACKENDURLBEER           | Backend url           | https://homeassistantserver/api/services/script/turn_on or https://myrocketchat.ch/hooks/DKC4GeDPWYnjKEb5g/jDKAB5zbaG2tHx94cQny7epqAg2QBaE3QFdyBGmYoy3tekgi or what ever ULR you'd like to send a post request to, when the button was clicked |
 | APPLICATION_AUTHTOKENBEER (optional) | The BearerToken to be sent to the backend |  |
 | APPLICATION_PAYLOADBEER (optional)   | The Payload that will be sent to the backend in the request | {"entity_id": "script.notify_remote_fyrabebier"} |
 
@@ -21,7 +21,7 @@ The two buttons basically once clicked send post requests to backend urls.
 
 | Environmentvariable                  | Description           | Example  |
 | ------------------------------------ |---------------------|----------|
-| APPLICATION_BACKENDURLCOFFEE           | Backend url           | https://myrocketchat.ch/hooks/DKC4GeDPWYnjKEb5g/jDKAB5zbaG2tHx94cQny7epqAg2QBaE3QFdyBGmYoy3tekgi  |
+| APPLICATION_BACKENDURLCOFFEE           | Backend url           | https://homeassistantserver/api/services/script/turn_on or https://myrocketchat.ch/hooks/DKC4GeDPWYnjKEb5g/jDKAB5zbaG2tHx94cQny7epqAg2QBaE3QFdyBGmYoy3tekgi or what ever ULR you'd like to send a post request to, when the button was clicked  |
 | APPLICATION_AUTHTOKENCOFFEE (optional) | The BearerToken to be sent to the backend |  |
 | APPLICATION_PAYLOADCOFFEE (optional)   | The Payload that will be sent to the backend in the request | { "icon_emoji": ":ghost:", "text": "Let's have a coffee, join me please [Meetingroom](https://linktoyoumeetingroom)", |
 
@@ -36,12 +36,14 @@ To build the Springboot application just run
 ./gradlew build
 ```
 
-Or directly build the docker image
+Or build the docker image
 
 ```bash
 docker build -it virtual-puzzle-button .
 ```
 
 ## pre built docker image from dockerhub
+
+get the image from Docker Hub `docker pull puzzle/virtual-beerbutton`
 
 https://hub.docker.com/r/puzzle/virtual-beerbutton
