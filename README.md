@@ -23,7 +23,7 @@ The two buttons basically once clicked send post requests to backend urls.
 | ------------------------------------ |---------------------|----------|
 | APPLICATION_BACKENDURLCOFFEE           | Backend url           | https://homeassistantserver/api/services/script/turn_on or https://myrocketchat.ch/hooks/DKC4GeDPWYnjKEb5g/jDKAB5zbaG2tHx94cQny7epqAg2QBaE3QFdyBGmYoy3tekgi or what ever ULR you'd like to send a post request to, when the button was clicked  |
 | APPLICATION_AUTHTOKENCOFFEE (optional) | The BearerToken to be sent to the backend |  |
-| APPLICATION_PAYLOADCOFFEE (optional)   | The Payload that will be sent to the backend in the request | { "icon_emoji": ":ghost:", "text": "Let's have a coffee, join me please [Meetingroom](https://linktoyoumeetingroom)", |
+| APPLICATION_PAYLOADCOFFEE (optional)   | The Payload that will be sent to the backend in the request | { "icon_emoji": ":ghost:", "text": "Let's have a coffee, join me please [Meetingroom](https://linktoyoumeetingroom)" } |
 
 
 
