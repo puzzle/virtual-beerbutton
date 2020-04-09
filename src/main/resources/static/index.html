@@ -5,18 +5,38 @@
 <title>Puzzle Buttons</title>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script>
- $(document).ready(function() {
-   $(".beer").click(function() {
-     $('svg', this).addClass('full');
-     $.post("/api/beerbutton/", null,
-       function(data,status){});
+ var dryMode = false;
+
+ $(document).ready(() => {
+   $(".beer").click(event => {
+     $('svg', event.currentTarget).addClass('full');
+     if (!dryMode) {
+       $.post("/api/beerbutton/", null, (data, status) => {
+         showNotification('Fyrabe Bier Tweet gesendet.');
+       });
+     }
    });
-   $(".coffee").click(function(){
-     $('svg', this).addClass('full');
-     $.post("/api/coffeebutton/", null,
-       function(data,status){});
+   
+   $(".coffee").click(event => {
+     $('svg', event.currentTarget).addClass('full');
+     if (!dryMode) {
+       $.post("/api/coffeebutton/", null, (data, status) => {
+         showNotification('Rocket Chat Nachricht gesendet.');
+       });
+     }
+   });
+
+   $('#drymode').change(event => {
+     dryMode = event.target.checked;
    });
  });
+
+ function showNotification(message) {
+   $('#notification').text(message).addClass('visible');
+   setTimeout(() => {
+     $('#notification').removeClass('visible');
+   }, 3000);
+ }
 </script>
 <style>
  html {
@@ -27,12 +47,40 @@
    display: flex;
    margin: 0;
    padding: 0;
+   font-family: sans-serif;
  }
+
+ a, a:visited {
+   color: #61B44B;
+   text-decoration: none;
+ }
+ a:hover, a:active {
+   color: #69B978;
+   text-decoration: underline;
+ }
+
+ #notification {
+   position: absolute;
+   bottom: 0;
+   left: 0;
+   right: 0;
+   background-color: #69B978;
+   color: white;
+   padding: 0.5rem;
+   font-size: 2rem;
+   text-align: center;
+   transition: opacity 0.2s ease-in;
+   opacity: 0;
+ }
+ #notification.visible {
+   opacity: 1;
+ }
+
  .container {
    flex: 1;
    display: grid;
    grid-template-columns: 1fr 45vmin 1fr 45vmin 1fr;
-   grid-template-rows: 1fr 45vmin 1fr;
+   grid-template-rows: 1fr 45vmin min-content 1fr;
  }
 
  .btn {
@@ -107,10 +155,26 @@
    transform: scaleY(1);
    opacity: 0.8;
  }
+
+ #meta {
+   margin-top: 1rem;
+   margin-left: 1rem;
+ }
+ #drymode {
+   vertical-align: middle;
+ }
+ #hangouts {
+   grid-column: 2/5;
+   grid-row: 3/4;
+   text-align: center;
+   padding-top: 5rem;
+   font-size: 2rem;
+ }
 </style>
 </head>
 <body>
   <main class="container">
+    <div id="notification"></div>
     <button type="button" class="btn beer">
       <svg
         xmlns:dc="http://purl.org/dc/elements/1.1/"
@@ -364,6 +428,13 @@
         </g>
       </svg>
     </button>
+    <a id="hangouts" href="https://meet.google.com/adz-vcom-dpa">Virtual Meeting Room</a>
+    <div id="meta">
+      <label>
+        <input type="checkbox" id="drymode">
+        Dry mode
+      </label>
+    </div>
   </main>
 </body>
 </html>
