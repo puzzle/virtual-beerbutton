@@ -7,6 +7,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -36,6 +37,15 @@ public class ButtonResource {
 	
 	@Value("${application.payloadcoffee:#{null}}")
 	private String payloadcoffee;
+	
+	@Value("${application.drymodeFeatureEnabled:#{false}}")
+	private boolean drymodeFeatureEnabled;
+	
+	@Value("${application.virtualRoomUrlBeerButton:#{null}}")
+	private String virtualRoomUrlBeerButton;
+	
+	@Value("${application.virtualRoomUrlCoffeeButton:#{null}}")
+	private String virtualRoomUrlCoffeeButton;
 	
 	
 	
@@ -67,5 +77,10 @@ public class ButtonResource {
 	    
 	    String result = restTemplate.postForObject(url, request, String.class);
 	    log.info("Result from backend: " + result);
+	}
+	
+	@GetMapping(value="/configuration")
+	public Configuration getConfiguration() {
+		return new Configuration(drymodeFeatureEnabled, virtualRoomUrlBeerButton, virtualRoomUrlCoffeeButton);
 	}
 }
