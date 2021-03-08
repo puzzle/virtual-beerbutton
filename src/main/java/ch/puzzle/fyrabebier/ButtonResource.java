@@ -1,7 +1,10 @@
 package ch.puzzle.fyrabebier;
 
+import java.util.Arrays;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -13,6 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Tag;
 
 @RestController
 @RequestMapping(value = "/api")
@@ -47,13 +54,22 @@ public class ButtonResource {
 	@Value("${application.virtualRoomUrlCoffeeButton:#{null}}")
 	private String virtualRoomUrlCoffeeButton;
 	
-	
+	private final Counter beerCounter;
+	private final Counter coffeeCounter;
+
+	@Autowired
+	public ButtonResource(MeterRegistry meterRegistry) {
+		this.beerCounter = meterRegistry.counter("puzzle.virtualbutton.button.click.total", Arrays.asList(Tag.of("button", "beer")));
+		this.coffeeCounter = meterRegistry.counter("puzzle.virtualbutton.button.click.total", Arrays.asList(Tag.of("button", "coffee")));
+	}
+
 	
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping(value="/beerbutton")
 	public void hitBeerButton() {
 		log.info("Beer Button was clicked");
 		sendPayloadToBackend(backendurlbeer, tokenbeer, payloadbeer);
+		beerCounter.increment();
 	}
 	
 	@ResponseStatus(HttpStatus.CREATED)
@@ -61,6 +77,7 @@ public class ButtonResource {
 	public void hitCoffeeButton() {
 		log.info("Coffee Button was clicked");
 		sendPayloadToBackend(backendurlcoffee, tokencoffee, payloadcoffee);
+		coffeeCounter.increment();
 	}
 	
 	private void sendPayloadToBackend(String url, String token, String payload) {
