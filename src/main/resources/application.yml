@@ -1,3 +1,10 @@
 application:
    backendurlbeer: http://localhost8080:/api/test
    backendurlcoffee: http://localhost8080:/api/test
+management:
+  server:
+   port: 9000
+  endpoints:
+    web:
+      exposure: 
+        include: prometheus,health,info,metric
