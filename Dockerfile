@@ -1,14 +1,13 @@
-FROM fabric8/java-centos-openjdk8-jdk
+FROM fabric8/java-centos-openjdk11-jdk
 
-MAINTAINER Thomas Philipona <philipona@puzzle.ch>
+LABEL maintainer="philipona@puzzle.ch"
 
-EXPOSE 8080 9090
+EXPOSE 8080 9000
+
 
 RUN mkdir -p /tmp/src/
-COPY src /tmp/src/src
-COPY gradle /tmp/src/gradle
-COPY build.gradle gradlew settings.gradle /tmp/src/
+ADD . /tmp/src/
 
-RUN cd /tmp/src && sh gradlew build
+RUN cd /tmp/src && sh gradlew build -Dorg.gradle.daemon=false
 
-RUN cp -a /tmp/src/build/libs/*.jar /deployments/virtual-beerbutton.jar
+RUN cp -a  /tmp/src/build/libs/*.jar /deployments/virtual-beerbutton.jar
