@@ -1,6 +1,8 @@
 package ch.puzzle.fyrabebier;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +13,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -56,9 +60,13 @@ public class ButtonResource {
 	
 	private final Counter beerCounter;
 	private final Counter coffeeCounter;
+	private final Map<String, Map<Integer, Counter>> counters;
+	private final MeterRegistry meterRegistry;
 
 	@Autowired
 	public ButtonResource(MeterRegistry meterRegistry) {
+		this.meterRegistry = meterRegistry;
+		this.counters = new HashMap<>();
 		this.beerCounter = meterRegistry.counter("puzzle.virtualbutton.button.click.total", Arrays.asList(Tag.of("button", "beer")));
 		this.coffeeCounter = meterRegistry.counter("puzzle.virtualbutton.button.click.total", Arrays.asList(Tag.of("button", "coffee")));
 	}
@@ -78,6 +86,33 @@ public class ButtonResource {
 		log.info("Coffee Button was clicked");
 		sendPayloadToBackend(backendurlcoffee, tokencoffee, payloadcoffee);
 		coffeeCounter.increment();
+	}
+
+	@ResponseStatus(HttpStatus.CREATED)
+	@PostMapping(value="/vote/{group}")
+	public void hitVoteButton(@PathVariable("group") String group, @RequestBody int value) {
+		if (value < 0 || value >= 10){
+			value = -1;
+		}
+		log.debug("Vote Button was clicked: group (" + group + ") value (" + value + ")");
+
+		Counter counter;
+		if(counters.containsKey(group)){
+			if(counters.get(group).containsKey(Integer.valueOf(value))){
+				counter = counters.get(group).get(Integer.valueOf(value));
+			}else{
+				counter = meterRegistry.counter("puzzle.virtualbutton.vote.total", Arrays.asList(Tag.of("group", group), Tag.of("value", String.valueOf(value))));
+				counters.get(group).put(Integer.valueOf(value), counter);
+			}
+		}else{
+			Map<Integer, Counter> counterMap;
+			counterMap = new HashMap<>();
+			counter = meterRegistry.counter("puzzle.virtualbutton.vote.total", Arrays.asList(Tag.of("group", group), Tag.of("value", String.valueOf(value))));
+			counterMap.put(Integer.valueOf(value), counter);
+			counters.put(group, counterMap);
+		}
+
+		counter.increment();
 	}
 	
 	private void sendPayloadToBackend(String url, String token, String payload) {

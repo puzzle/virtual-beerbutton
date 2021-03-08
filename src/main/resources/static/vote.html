@@ -1,0 +1,144 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>Vote</title>
+<script>
+ var dryMode = false;
+
+ window.addEventListener('load', (event) => {
+   fetch('/api/configuration')
+     .then(res => res.json())
+     .then(config => {
+       if (config.drymodeFeatureEnabled) {
+         document.getElementById('drymode-container').style.display = 'block';
+       }
+     });
+
+   document.querySelectorAll(".vote").forEach(button => 
+     button.addEventListener("click", handleButtonClick('/api'+window.location.pathname))
+   )
+
+   document.getElementById('drymode').addEventListener('change', event => {
+     dryMode = event.target.checked;
+   });
+
+   function handleButtonClick(url) {
+     return (event) => {
+
+       if (!dryMode) {
+         fetch(url, {
+           method: 'POST',
+           headers: {
+             'Content-Type': 'application/json'
+           },
+           body: event.currentTarget.innerHTML
+         }).then(
+           () => showNotification('Message has been sent.'),
+           () => showNotification('An error occurred when sending the message.')
+         );
+       }
+     };
+   }
+
+   function showNotification(message) {
+     const element = document.getElementById('notification');
+     element.textContent = message;
+     element.classList.add('visible');
+     setTimeout(() => {
+       element.classList.remove('visible');
+     }, 3000);
+   }
+ });
+</script>
+
+<style>
+ html {
+   height: 100%;
+ }
+ body {
+   min-height: 100%;
+   display: flex;
+   margin: 0;
+   padding: 0;
+   font-family: sans-serif;
+ }
+
+ a, a:visited {
+   color: #61B44B;
+   text-decoration: none;
+ }
+ a:hover, a:active {
+   color: #69B978;
+   text-decoration: underline;
+ }
+
+ #notification {
+   position: absolute;
+   bottom: 0;
+   left: 0;
+   right: 0;
+   background-color: #69B978;
+   color: white;
+   padding: 0.5rem;
+   font-size: 2rem;
+   text-align: center;
+   transition: opacity 0.2s ease-in;
+   opacity: 0;
+ }
+ #notification.visible {
+   opacity: 1;
+ }
+
+ .container {
+   flex: 1;
+   display: grid;
+   grid-template-columns: 1fr 45vmin 1fr 45vmin 1fr;
+   grid-template-rows: 1fr 45vmin min-content 1fr;
+ }
+
+ .btn {
+   padding:0;
+   border: 0;
+   background-color: #3b7bbe;
+   border-radius: 50%;
+   overflow: hidden;
+   cursor: pointer;
+ }
+ .btn:active {
+ }
+ .btn svg {
+   display: block;
+   width: 100%;
+   height: 100%;
+ }
+
+ #
+ #drymode-container {
+   position: absolute;
+   margin-top: 1rem;
+   margin-left: 1rem;
+ }
+ #drymode {
+   vertical-align: middle;
+ }
+ 
+</style>
+</head>
+<body>
+  <main class="container">
+    <div id="notification"></div>
+    <button class="vote btn">1</button>
+    <button class="vote btn">2</button>
+    <button class="vote btn">3</button>
+    <button class="vote btn">4</button>
+    <button class="vote btn">5</button>
+    <div id="drymode-container" style="display: none;">
+      <label>
+        <input type="checkbox" id="drymode">
+        Dry mode
+      </label>
+    </div>
+  </main>
+</body>
+</html>
