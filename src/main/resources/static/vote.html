@@ -93,27 +93,33 @@
  .container {
    flex: 1;
    display: grid;
-   grid-template-columns: 1fr 45vmin 1fr 45vmin 1fr;
+   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
    grid-template-rows: 1fr 45vmin min-content 1fr;
  }
 
  .btn {
    padding:0;
    border: 0;
+   font-size: 24px;
    background-color: #3b7bbe;
    border-radius: 50%;
    overflow: hidden;
    cursor: pointer;
- }
- .btn:active {
- }
- .btn svg {
+   box-shadow: 0 9px #999;
+   color: white;
    display: block;
    width: 100%;
    height: 100%;
+   grid-row: 2/3;
  }
+ .btn:hover {background-color: #69B978}
 
- #
+.btn:active {
+  background-color: #69B978;
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
+
  #drymode-container {
    position: absolute;
    margin-top: 1rem;
