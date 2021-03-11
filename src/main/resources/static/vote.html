@@ -5,6 +5,16 @@
     <title>Vote</title>
     <script>
      window.addEventListener('load', (event) => {
+       let dashboardUrlVoteResults;
+       fetch('/api/configuration')
+         .then(res => res.json())
+         .then(config => {
+           if (config.dashboardUrlVoteResults) {
+             dashboardUrlVoteResults = config.dashboardUrlVoteResults;
+             document.querySelector('.results-link').setAttribute('href', config.dashboardUrlVoteResults);
+           }
+         });
+
        document.querySelectorAll(".vote").forEach(button =>
          button.addEventListener("click", handleButtonClick('/api' + window.location.pathname))
        )
@@ -23,55 +33,71 @@
              },
              body: event.currentTarget.dataset.rating
            }).then(
-             (res) => res.status < 400
-               ? showResult('Thank you!')
-               : showResult('Error', 'red'),
-             () => showResult('Error', 'red')
+             (res) => showResult(res.status < 400),
+             () => showResult(false)
            );
          };
        }
 
-       function showResult(message, color) {
+       function showResult(success) {
          // Hide buttons
-         document
-           .querySelectorAll('.btn')
-           .forEach(b => b.style.display = 'none');
+         document.querySelector('.buttons').style.display = 'none';
 
-         const result = document.querySelector('.result')
-         result.textContent = message;
-         result.style.display = 'inline';
-         if (color) {
-           result.style.color = color;
+         const heading = document.querySelector('.heading');
+         heading.textContent = success ? 'Thank you!' : 'Error';
+         heading.style.color = success ? 'inherit' : 'red';
+         if (success && dashboardUrlVoteResults) {
+           document.querySelector('.results-link').style.display = 'inline';
          }
        }
      });
     </script>
 
     <style>
-      html {
-        height: 100%;
-      }
-      body {
-        min-height: 100%;
-        display: flex;
-        margin: 0;
-        padding: 0;
-        font-family: sans-serif;
-      }
+     html {
+       height: 100%;
+     }
+     body {
+       min-height: 100%;
+       display: flex;
+       margin: 0;
+       padding: 0;
+       font-family: sans-serif;
+     }
 
-      .container {
-        flex: 1;
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        padding: 0 15%;
-      }
+     a, a:visited {
+       color: #61B44B;
+       text-decoration: none;
+     }
+     a:hover, a:active {
+       color: #69B978;
+       text-decoration: underline;
+     }
 
-      @media (max-width: 800px) {
-        .container {
-          padding: 0 5%;
-        }
-      }
+     .container {
+       flex: 1;
+       display: flex;
+       flex-direction: column;
+       justify-content: center;
+     }
+
+     .heading {
+       width: 100%;
+       font-size: 5rem;
+       font-weight: 300;
+       text-align: center;
+     }
+
+     .buttons {
+       display: flex;
+       justify-content: space-around;
+       padding: 0 15%;
+     }
+     @media (max-width: 800px) {
+       .buttons {
+         padding: 0 5%;
+       }
+     }
 
      .btn {
        padding: 10px;
@@ -112,20 +138,24 @@
        width: 100%;
      }
 
-     .result {
-       font-size: 10rem;
+     .results-link {
+       text-align: center;
+       font-size: 1.5rem;
      }
     </style>
   </head>
 
   <body>
     <main class="container">
-      <button class="vote btn" data-rating="1"><img src="./frown-regular.svg" alt="Rating 1" /></button>
-      <button class="vote btn" data-rating="2"><img src="./frown-open-regular.svg" alt="Rating 2" /></button>
-      <button class="vote btn" data-rating="3"><img src="./meh-regular.svg" alt="Rating 3" /></button>
-      <button class="vote btn" data-rating="4"><img src="./grin-regular.svg" alt="Rating 4" /></button>
-      <button class="vote btn" data-rating="5"><img src="./laugh-regular.svg" alt="Rating 5" /></button>
-      <p class="result" style="display: none"></p>
+      <h1 class="heading">Moodmeter</h1>
+      <div class="buttons">
+        <button class="vote btn" data-rating="1"><img src="/frown-regular.svg" alt="Rating 1" /></button>
+        <button class="vote btn" data-rating="2"><img src="/frown-open-regular.svg" alt="Rating 2" /></button>
+        <button class="vote btn" data-rating="3"><img src="/meh-regular.svg" alt="Rating 3" /></button>
+        <button class="vote btn" data-rating="4"><img src="/grin-regular.svg" alt="Rating 4" /></button>
+        <button class="vote btn" data-rating="5"><img src="/laugh-regular.svg" alt="Rating 5" /></button>
+      </div>
+      <a href="#" class="results-link" style="display: none">Show results</a>
     </main>
   </body>
 </html>
