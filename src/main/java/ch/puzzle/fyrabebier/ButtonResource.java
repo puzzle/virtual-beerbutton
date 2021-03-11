@@ -57,6 +57,9 @@ public class ButtonResource {
 	
 	@Value("${application.virtualRoomUrlCoffeeButton:#{null}}")
 	private String virtualRoomUrlCoffeeButton;
+
+	@Value("${application.dashboardUrlVoteResults:#{null}}")
+	private String dashboardUrlVoteResults;
 	
 	private final Counter beerCounter;
 	private final Counter coffeeCounter;
@@ -133,6 +136,6 @@ public class ButtonResource {
 	
 	@GetMapping(value="/configuration")
 	public Configuration getConfiguration() {
-		return new Configuration(drymodeFeatureEnabled, virtualRoomUrlBeerButton, virtualRoomUrlCoffeeButton);
+		return new Configuration(drymodeFeatureEnabled, virtualRoomUrlBeerButton, virtualRoomUrlCoffeeButton, dashboardUrlVoteResults);
 	}
 }
