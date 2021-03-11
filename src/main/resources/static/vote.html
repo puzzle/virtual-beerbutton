@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8"/>
-    <title>Vote</title>
+    <title>Moodmeter</title>
     <script>
      window.addEventListener('load', (event) => {
        let dashboardUrlVoteResults;
@@ -10,8 +10,9 @@
          .then(res => res.json())
          .then(config => {
            if (config.dashboardUrlVoteResults) {
-             dashboardUrlVoteResults = config.dashboardUrlVoteResults;
-             document.querySelector('.results-link').setAttribute('href', config.dashboardUrlVoteResults);
+             let pathname = window.location.pathname.split('/').filter(Boolean);
+             dashboardUrlVoteResults = config.dashboardUrlVoteResults.replace('{{groupvar}}',pathname[pathname.length]);
+             document.querySelector('.results-link').setAttribute('href', dashboardUrlVoteResults);
            }
          });
 
@@ -155,7 +156,7 @@
         <button class="vote btn" data-rating="4"><img src="/grin-regular.svg" alt="Rating 4" /></button>
         <button class="vote btn" data-rating="5"><img src="/laugh-regular.svg" alt="Rating 5" /></button>
       </div>
-      <a href="#" class="results-link" style="display: none">Show results</a>
+      <a href="#" target="_blank" class="results-link" style="display: none">Show results</a>
     </main>
   </body>
 </html>
