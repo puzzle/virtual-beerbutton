@@ -48,23 +48,29 @@
     </script>
 
     <style>
-     html {
-       height: 100%;
-     }
-     body {
-       min-height: 100%;
-       display: flex;
-       margin: 0;
-       padding: 0;
-       font-family: sans-serif;
-     }
+      html {
+        height: 100%;
+      }
+      body {
+        min-height: 100%;
+        display: flex;
+        margin: 0;
+        padding: 0;
+        font-family: sans-serif;
+      }
 
-     .container {
-       flex: 1;
-       display: flex;
-       justify-content: space-around;
-       align-items: center;
-       padding: 0 15%;
+      .container {
+        flex: 1;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        padding: 0 15%;
+      }
+
+      @media (max-width: 800px) {
+        .container {
+          padding: 0 5%;
+        }
       }
 
      .btn {
