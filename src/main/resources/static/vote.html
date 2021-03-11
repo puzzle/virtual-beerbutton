@@ -11,7 +11,7 @@
          .then(config => {
            if (config.dashboardUrlVoteResults) {
              let pathname = window.location.pathname.split('/').filter(Boolean);
-             dashboardUrlVoteResults = config.dashboardUrlVoteResults.replace('{{groupvar}}',pathname[pathname.length]);
+             dashboardUrlVoteResults = config.dashboardUrlVoteResults.replace('{{groupvar}}',pathname[pathname.length - 1]);
              document.querySelector('.results-link').setAttribute('href', dashboardUrlVoteResults);
            }
          });
