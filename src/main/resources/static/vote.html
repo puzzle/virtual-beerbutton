@@ -1,150 +1,131 @@
 <!doctype html>
 <html>
-<head>
-<meta charset="utf-8"/>
-<title>Vote</title>
-<script>
- var dryMode = false;
+  <head>
+    <meta charset="utf-8"/>
+    <title>Vote</title>
+    <script>
+     window.addEventListener('load', (event) => {
+       document.querySelectorAll(".vote").forEach(button =>
+         button.addEventListener("click", handleButtonClick('/api' + window.location.pathname))
+       )
 
- window.addEventListener('load', (event) => {
-   fetch('/api/configuration')
-     .then(res => res.json())
-     .then(config => {
-       if (config.drymodeFeatureEnabled) {
-         document.getElementById('drymode-container').style.display = 'block';
+       function handleButtonClick(url) {
+         return (event) => {
+           // Disable buttons
+           document
+             .querySelectorAll('.btn')
+             .forEach(b => b.disabled = 'disabled');
+
+           fetch(url, {
+             method: 'POST',
+             headers: {
+               'Content-Type': 'application/json'
+             },
+             body: event.currentTarget.dataset.rating
+           }).then(
+             (res) => res.status < 400
+               ? showResult('Thank you!')
+               : showResult('Error', 'red'),
+             () => showResult('Error', 'red')
+           );
+         };
+       }
+
+       function showResult(message, color) {
+         // Hide buttons
+         document
+           .querySelectorAll('.btn')
+           .forEach(b => b.style.display = 'none');
+
+         const result = document.querySelector('.result')
+         result.textContent = message;
+         result.style.display = 'inline';
+         if (color) {
+           result.style.color = color;
+         }
        }
      });
+    </script>
 
-   document.querySelectorAll(".vote").forEach(button => 
-     button.addEventListener("click", handleButtonClick('/api'+window.location.pathname))
-   )
+    <style>
+      html {
+        height: 100%;
+      }
+      body {
+        min-height: 100%;
+        display: flex;
+        margin: 0;
+        padding: 0;
+        font-family: sans-serif;
+      }
 
-   document.getElementById('drymode').addEventListener('change', event => {
-     dryMode = event.target.checked;
-   });
+      .container {
+        flex: 1;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        padding: 0 15%;
+      }
 
-   function handleButtonClick(url) {
-     return (event) => {
+      @media (max-width: 800px) {
+        .container {
+          padding: 0 5%;
+        }
+      }
 
-       if (!dryMode) {
-         fetch(url, {
-           method: 'POST',
-           headers: {
-             'Content-Type': 'application/json'
-           },
-           body: event.currentTarget.innerHTML
-         }).then(
-           () => showNotification('Message has been sent.'),
-           () => showNotification('An error occurred when sending the message.')
-         );
-       }
-     };
-   }
+     .btn {
+       padding: 10px;
+       border: 0;
+       border-radius: 50%;
+       overflow: hidden;
+       cursor: pointer;
+       width: 15%;
+     }
+     .btn:hover {
+       box-shadow: 0px 0px 30px #3FA8E0;
+     }
+     .btn:active {
+       box-shadow: 0px 0px 15px #3b7bbe;
+     }
+     .btn:disabled {
+       box-shadow: none;
+       opacity: 0.5;
+       cursor: default;
+     }
+     .btn[data-rating="1"] {
+       background-color: red;
+     }
+     .btn[data-rating="2"] {
+       background-color: orange;
+     }
+     .btn[data-rating="3"] {
+       background-color: gold;
+     }
+     .btn[data-rating="4"] {
+       background-color: chartreuse;
+     }
+     .btn[data-rating="5"] {
+       background-color: springgreen;
+     }
+     .btn img {
+       display: block;
+       width: 100%;
+     }
 
-   function showNotification(message) {
-     const element = document.getElementById('notification');
-     element.textContent = message;
-     element.classList.add('visible');
-     setTimeout(() => {
-       element.classList.remove('visible');
-     }, 3000);
-   }
- });
-</script>
+     .result {
+       font-size: 10rem;
+     }
+    </style>
+  </head>
 
-<style>
- html {
-   height: 100%;
- }
- body {
-   min-height: 100%;
-   display: flex;
-   margin: 0;
-   padding: 0;
-   font-family: sans-serif;
- }
-
- a, a:visited {
-   color: #61B44B;
-   text-decoration: none;
- }
- a:hover, a:active {
-   color: #69B978;
-   text-decoration: underline;
- }
-
- #notification {
-   position: absolute;
-   bottom: 0;
-   left: 0;
-   right: 0;
-   background-color: #69B978;
-   color: white;
-   padding: 0.5rem;
-   font-size: 2rem;
-   text-align: center;
-   transition: opacity 0.2s ease-in;
-   opacity: 0;
- }
- #notification.visible {
-   opacity: 1;
- }
-
- .container {
-   flex: 1;
-   display: grid;
-   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-   grid-template-rows: 1fr 45vmin min-content 1fr;
- }
-
- .btn {
-   padding:0;
-   border: 0;
-   font-size: 24px;
-   background-color: #3b7bbe;
-   border-radius: 50%;
-   overflow: hidden;
-   cursor: pointer;
-   box-shadow: 0 9px #999;
-   color: white;
-   display: block;
-   width: 100%;
-   height: 100%;
-   grid-row: 2/3;
- }
- .btn:hover {background-color: #69B978}
-
-.btn:active {
-  background-color: #69B978;
-  box-shadow: 0 5px #666;
-  transform: translateY(4px);
-}
-
- #drymode-container {
-   position: absolute;
-   margin-top: 1rem;
-   margin-left: 1rem;
- }
- #drymode {
-   vertical-align: middle;
- }
- 
-</style>
-</head>
-<body>
-  <main class="container">
-    <div id="notification"></div>
-    <button class="vote btn">1</button>
-    <button class="vote btn">2</button>
-    <button class="vote btn">3</button>
-    <button class="vote btn">4</button>
-    <button class="vote btn">5</button>
-    <div id="drymode-container" style="display: none;">
-      <label>
-        <input type="checkbox" id="drymode">
-        Dry mode
-      </label>
-    </div>
-  </main>
-</body>
+  <body>
+    <main class="container">
+      <button class="vote btn" data-rating="1"><img src="./frown-regular.svg" alt="Rating 1" /></button>
+      <button class="vote btn" data-rating="2"><img src="./frown-open-regular.svg" alt="Rating 2" /></button>
+      <button class="vote btn" data-rating="3"><img src="./meh-regular.svg" alt="Rating 3" /></button>
+      <button class="vote btn" data-rating="4"><img src="./grin-regular.svg" alt="Rating 4" /></button>
+      <button class="vote btn" data-rating="5"><img src="./laugh-regular.svg" alt="Rating 5" /></button>
+      <p class="result" style="display: none"></p>
+    </main>
+  </body>
 </html>

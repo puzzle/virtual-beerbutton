@@ -30,11 +30,17 @@ The two buttons basically once clicked send post requests to backend urls.
 
 ## Build application 
 
-To build the Springboot application just run
+To build the Springboot application just run:
 
 ```bash
 ./gradlew build
 ```
+
+You can then start the Spring Boot server with (accessible via http://localhost:8080):
+
+ ```bash
+ java -jar java -jar build/libs/fyrabebier-0.0.1-SNAPSHOT.jar
+ ```
 
 Or build the docker image
 
