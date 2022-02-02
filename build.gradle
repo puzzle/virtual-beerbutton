@@ -1,5 +1,5 @@
 plugins {
-  id 'org.springframework.boot' version '2.6.2'
+  id 'org.springframework.boot' version '2.6.3'
   id 'io.spring.dependency-management' version '1.0.11.RELEASE'
   id 'java'
 }
@@ -7,8 +7,6 @@ plugins {
 group = 'ch.puzzle'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
-
-ext['log4j2.version'] = '2.17.0'
 
 repositories {
 	mavenCentral()
